@@ -41,6 +41,10 @@ document.addEventListener('error', e => {
   const t = e.target;
   if (t.tagName === 'IMG' && !t.dataset.fb) { t.dataset.fb = '1'; t.src = placeholder(t.getAttribute('src')); }
 }, true);
+/* รูปที่โหลดพลาดไปแล้วก่อนสคริปต์เริ่มทำงาน (เช่น รูปโปรไฟล์) ก็ใช้ภาพสำรองด้วย */
+addEventListener('DOMContentLoaded', () => $$('img').forEach(i => {
+  if (i.complete && !i.naturalWidth && !i.dataset.fb) { i.dataset.fb = '1'; i.src = placeholder(i.getAttribute('src')); }
+}));
 
 /* ===== โหมดสว่าง / มืด (จำค่าไว้ในเบราว์เซอร์) ===== */
 function setTheme(t) {
@@ -63,7 +67,9 @@ const catOf = p => p.tags.some(t => /ESP32|Arduino|IoT/i.test(t)) ? 'iot' : p.ta
 /* ===== สร้างการ์ดผลงาน ===== */
 $('#projectGrid').innerHTML = PROJECTS.map(p => `
   <article class="card pcard reveal" data-cat="${catOf(p)}">
-    <div class="pimg"><img src="${p.images[0]}" alt="${p.title}" loading="lazy"></div>
+    <div class="pimg"><img src="${p.images[0]}" alt="${p.title}" loading="lazy">
+      <button class="plink" data-project="${p.id}" aria-label="ดูรายละเอียด ${p.title}"><span class="btn primary">ดูรายละเอียด<svg class="i"><use href="#i-arrow"/></svg></span></button>
+    </div>
     <div class="pbody">
       <h3>${p.title}${p.badge ? ` <span class="badge">${p.badge}</span>` : ''}</h3>
       <ul class="chips">${p.tags.map(t => `<li>${t}</li>`).join('')}</ul>
@@ -266,7 +272,10 @@ if ('IntersectionObserver' in window) {
   bar.addEventListener('click', e => {
     const b = e.target.closest('[data-f]'); if (!b) return;
     $$('[data-f]', bar).forEach(x => { const on = x === b; x.classList.toggle('on', on); x.setAttribute('aria-pressed', on); });
-    $$('#projectGrid .pcard').forEach(c => { c.hidden = b.dataset.f !== 'all' && c.dataset.cat !== b.dataset.f; });
+    $$('#projectGrid .pcard').forEach(c => {
+      c.hidden = b.dataset.f !== 'all' && c.dataset.cat !== b.dataset.f;
+      if (!c.hidden && !reduceMotion) { c.classList.remove('pop-in'); void c.offsetWidth; c.classList.add('pop-in'); }
+    });
   });
 })();
 
@@ -294,13 +303,31 @@ if ('IntersectionObserver' in window) {
 
 /* ===== แถบความคืบหน้าการเลื่อน + ปุ่มกลับขึ้นบน ===== */
 (function scrollFx() {
-  const bar = $('#progress'), top = $('#toTop'); let tick = false;
+  const bar = $('#progress'), top = $('#toTop'), nav = $('.nav'); let tick = false;
   function update() {
     const max = document.documentElement.scrollHeight - innerHeight, y = scrollY;
     bar.style.transform = `scaleX(${max > 0 ? Math.min(y / max, 1) : 0})`;
     top.hidden = y < 500; tick = false;
+    nav.classList.toggle('scrolled', y > 10);
   }
   addEventListener('scroll', () => { if (!tick) { tick = true; requestAnimationFrame(update); } }, { passive: true });
   top.addEventListener('click', () => scrollTo({ top: 0, behavior: reduceMotion ? 'auto' : 'smooth' }));
   update();
+})();
+
+/* ===== ✨ แอนิเมชันการ์ดตอนกรองจบแล้วถอดคลาสออก (ไม่ให้ทับเอฟเฟกต์เอียง 3D) ===== */
+$('#projectGrid').addEventListener('animationend', e => {
+  if (e.animationName === 'pop') e.target.classList.remove('pop-in');
+});
+
+/* ===== ✨ ฟอร์มติดต่อ: เปิดแอปอีเมลพร้อมข้อความ (ดึงอีเมลปลายทางจากลิงก์ mailto ในหน้า) ===== */
+(function contactForm() {
+  const form = $('#contactForm'), link = $('a[href^="mailto:"]'); if (!form || !link) return;
+  const to = link.getAttribute('href').replace('mailto:', '');
+  form.addEventListener('submit', e => {
+    e.preventDefault();
+    const name = $('#fName').value.trim(), mail = $('#fEmail').value.trim(), msg = $('#fMsg').value.trim();
+    const subject = `ติดต่อจากเว็บ Portfolio – ${name}`, body = `${msg}\n\n— ${name} (${mail})`;
+    location.href = `mailto:${to}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+  });
 })();
