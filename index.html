@@ -9,12 +9,12 @@
 <link rel="icon" type="image/svg+xml" href="favicon.svg">
 <link rel="icon" href="favicon.svg" sizes="any">
 <link rel="apple-touch-icon" href="favicon.svg">
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;500;600;700&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;500;600;700;800&display=swap">
 <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
-<!-- พื้นหลังเครือข่ายเคลื่อนไหว + แถบความคืบหน้าการเลื่อน -->
+<!-- พื้นหลังเครือข่ายเคลื่อนไหว + แสงตามเคอร์เซอร์ + แถบความคืบหน้าการเลื่อน -->
 <canvas id="bgCanvas" aria-hidden="true"></canvas>
 <div class="cursor-glow" aria-hidden="true"></div>
 <div class="progress" id="progress" aria-hidden="true"></div>
@@ -31,6 +31,7 @@
   <symbol id="i-mail" viewBox="0 0 24 24"><path d="M3 5h18v14H3z"/><path d="m3 6 9 7 9-7"/></symbol>
   <symbol id="i-phone" viewBox="0 0 24 24"><path d="M5 4h4l2 5-2.5 1.5a11 11 0 0 0 5 5L15 13l5 2v4a2 2 0 0 1-2 2A16 16 0 0 1 3 6a2 2 0 0 1 2-2z"/></symbol>
   <symbol id="i-school" viewBox="0 0 24 24"><path d="M12 3 2 8l10 5 10-5-10-5z"/><path d="M6 10.5V16c0 1.5 3 3 6 3s6-1.5 6-3v-5.5"/></symbol>
+  <symbol id="i-send" viewBox="0 0 24 24"><path d="M22 2 11 13"/><path d="M22 2 15 22l-4-9-9-4 20-7z"/></symbol>
 </svg>
 
 <header class="nav">
@@ -50,8 +51,9 @@
 <main>
   <!-- 1) HOME -->
   <section id="home" class="hero">
+    <div class="hero-word" aria-hidden="true"><span>HE</span>LLO</div>
     <div class="wrap hero-in">
-      <div class="hero-txt reveal">
+      <div class="hero-txt reveal from-left">
         <span class="pill"><i class="pulse"></i><span id="greet">สวัสดี</span></span>
         <p class="eyebrow">สวัสดีครับ ผมคือ</p>
         <h1>Achita <span class="grad">Thawontash</span></h1>
@@ -65,12 +67,13 @@
           <a class="btn ghost" href="#projects">ดูผลงาน<svg class="i"><use href="#i-arrow"/></svg></a>
         </div>
       </div>
-      <div class="avatar-wrap reveal">
+      <div class="avatar-wrap reveal from-right">
         <span class="ring2" aria-hidden="true"></span>
         <span class="ring" aria-hidden="true"><i class="orbit"></i></span>
         <div class="avatar"><img id="profileImg" src="assets/profile.jpg" alt="รูปโปรไฟล์ Achita Thawontat"></div>
       </div>
     </div>
+    <a href="#about" class="scroll-down" aria-label="เลื่อนลงไปส่วนถัดไป">SCROLL DOWN</a>
   </section>
 
   <!-- แถบเทคโนโลยีเลื่อนวน -->
@@ -86,11 +89,11 @@
     <div class="wrap">
       <div class="head reveal"><span class="kicker">About</span><h2>เกี่ยวกับฉัน</h2></div>
       <div class="about-grid">
-        <div class="reveal">
+        <div class="reveal from-left">
           <p>ผมเป็นนักศึกษา ปวส. ปีที่ 2 สาขาเทคโนโลยีคอมพิวเตอร์ ที่วิทยาลัยเทคนิคลพบุรี ชอบเรียนรู้และลงมือทำโปรเจกต์จริง ตั้งแต่การเขียนโปรแกรม การสร้างเว็บไซต์ ไปจนถึงการเชื่อมต่ออุปกรณ์อิเล็กทรอนิกส์กับระบบ IoT</p>
           <p>ผลงานที่ผ่านมามีทั้งระบบจัดการสต็อกคลังสินค้าห้องเย็น (WMS Cold Storage) ระบบตรวจสอบคุณภาพน้ำสำหรับเลี้ยงปลาดุก เว็บไซต์ข้อมูลปลาดุกในประเทศไทย และโปรเจกต์ Machine Learning ด้วย Decision Tree</p>
         </div>
-        <ul class="facts card reveal">
+        <ul class="facts card reveal from-right">
           <li><span>ชื่อ</span><b>Achita Thawontash (อชิตะ ถาวรทัศน์)</b></li>
           <li><span>สถานะ</span><b>นักศึกษา ปวส. 2</b></li>
           <li><span>สาขา</span><b>เทคโนโลยีคอมพิวเตอร์</b></li>
@@ -146,23 +149,59 @@
     </div>
   </section>
 
-  <!-- 6) CONTACT -->
+  <!-- 6) CONTACT: ข้อมูลติดต่อ + ฟอร์ม (กดส่งแล้วเปิดแอปอีเมลพร้อมข้อความ) -->
   <section id="contact">
     <div class="wrap">
       <div class="head reveal"><span class="kicker">Contact</span><h2>ติดต่อ</h2></div>
-      <div class="grid4">
-        <div class="card contact reveal"><span class="ico"><svg class="i"><use href="#i-user"/></svg></span><small>ชื่อ</small><b>Achita Thawontash (อชิตะ ถาวรทัศน์)</b></div>
-        <!-- แก้อีเมลตรงนี้ (ทั้ง href และข้อความ) -->
-        <a class="card contact reveal" href="mailto:achitat6@gmail.com"><span class="ico"><svg class="i"><use href="#i-mail"/></svg></span><small>อีเมล</small><b>achitat6@gmail.com</b></a>
-        <!-- แก้เบอร์โทรตรงนี้ (href ใช้รูปแบบ tel:+66XXXXXXXXX) -->
-        <a class="card contact reveal" href="tel:+66971212306"><span class="ico"><svg class="i"><use href="#i-phone"/></svg></span><small>เบอร์โทรศัพท์</small><b>097-121-2306</b></a>
-        <div class="card contact reveal"><span class="ico"><svg class="i"><use href="#i-school"/></svg></span><small>สถานศึกษา</small><b>วิทยาลัยเทคนิคลพบุรี</b></div>
+      <div class="contact-wrap">
+        <div class="contact-list">
+          <div class="card contact reveal from-left"><span class="ico"><svg class="i"><use href="#i-user"/></svg></span><div><small>ชื่อ</small><b>Achita Thawontash (อชิตะ ถาวรทัศน์)</b></div></div>
+          <!-- แก้อีเมลตรงนี้ (ทั้ง href และข้อความ) — ฟอร์มจะดึงอีเมลจากลิงก์นี้อัตโนมัติ -->
+          <a class="card contact reveal from-left" href="mailto:achitat6@gmail.com"><span class="ico"><svg class="i"><use href="#i-mail"/></svg></span><div><small>อีเมล</small><b>achitat6@gmail.com</b></div></a>
+          <!-- แก้เบอร์โทรตรงนี้ (href ใช้รูปแบบ tel:+66XXXXXXXXX) -->
+          <a class="card contact reveal from-left" href="tel:+66971212306"><span class="ico"><svg class="i"><use href="#i-phone"/></svg></span><div><small>เบอร์โทรศัพท์</small><b>097-121-2306</b></div></a>
+          <div class="card contact reveal from-left"><span class="ico"><svg class="i"><use href="#i-school"/></svg></span><div><small>สถานศึกษา</small><b>วิทยาลัยเทคนิคลพบุรี</b></div></div>
+        </div>
+        <form class="card cform reveal from-right" id="contactForm">
+          <div class="row">
+            <label>ชื่อ<input id="fName" type="text" placeholder="ชื่อของคุณ" required autocomplete="name"></label>
+            <label>อีเมล<input id="fEmail" type="email" placeholder="you@example.com" required autocomplete="email"></label>
+          </div>
+          <label>ข้อความ<textarea id="fMsg" placeholder="อยากคุยเรื่องอะไร บอกได้เลย" required></textarea></label>
+          <div class="foot-row">
+            <span class="note">กดส่งแล้วจะเปิดแอปอีเมลของคุณพร้อมข้อความนี้</span>
+            <button class="btn primary" type="submit">ส่งข้อความ<svg class="i"><use href="#i-send"/></svg></button>
+          </div>
+        </form>
       </div>
     </div>
   </section>
 </main>
 
-<footer class="foot"><div class="wrap">© <span id="year"></span> Achita Thawontash · สงวนลิขสิทธิ์</div></footer>
+<footer class="foot">
+  <div class="wrap foot-grid">
+    <div>
+      <h4>Achita Thawontash</h4>
+      <p>นักศึกษา ปวส. สาขาเทคโนโลยีคอมพิวเตอร์ สนใจ Programming, Web Development และ IoT</p>
+    </div>
+    <div>
+      <h4>เมนู</h4>
+      <ul>
+        <li><a href="#home">Home</a></li><li><a href="#about">About</a></li><li><a href="#skills">Skills</a></li>
+        <li><a href="#projects">Projects</a></li><li><a href="#education">Education</a></li><li><a href="#contact">Contact</a></li>
+      </ul>
+    </div>
+    <div>
+      <h4>ติดต่อ</h4>
+      <ul>
+        <li><a href="mailto:achitat6@gmail.com">achitat6@gmail.com</a></li>
+        <li><a href="tel:+66971212306">097-121-2306</a></li>
+        <li>วิทยาลัยเทคนิคลพบุรี</li>
+      </ul>
+    </div>
+  </div>
+  <div class="wrap foot-copy">© <span id="year"></span> Achita Thawontash · สงวนลิขสิทธิ์</div>
+</footer>
 
 <!-- Modal รายละเอียดผลงาน -->
 <div class="modal" id="modal" hidden>
