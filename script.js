@@ -5,6 +5,11 @@ const $$ = (s, r = document) => [...r.querySelectorAll(s)];
 const root = document.documentElement;
 root.classList.add('js');
 
+/* ===== ภาษา TH / EN: L(ไทย, อังกฤษ) เลือกข้อความตามภาษาปัจจุบัน ===== */
+let lang = 'th'; try { lang = localStorage.getItem('lang') === 'en' ? 'en' : 'th'; } catch (e) {}
+const L = (th, en) => lang === 'en' ? en : th;
+const P = (p, k) => (lang === 'en' && p.en && p.en[k]) || p[k];   // ข้อมูลผลงานตามภาษา (ถ้าไม่มีคำแปลจะใช้ภาษาไทย)
+
 /* ===== ข้อมูลผลงาน (แก้ไข/เพิ่มได้ที่นี่) — path ภาพต้องตรงกับโฟลเดอร์ assets ===== */
 const PROJECTS = [
   { id: 'wms-cold-storage', title: 'WMS Cold Storage', badge: 'ล่าสุด',
@@ -12,23 +17,32 @@ const PROJECTS = [
     summary: 'ระบบจัดการสต็อกคลังสินค้าห้องเย็น สำหรับตัดยอด จัดชุดพาเลทให้พอดี Master Cap และรวมเลท',
     points: ['นำเข้าข้อมูลสต็อกจากไฟล์ Excel / CSV ของระบบ WMS (รองรับข้อมูลหลายหมื่นแถว)', 'ตารางสต็อกรวมยอดตาม LPN พร้อมตัวกรองคลัง Location และประเภท LPN', 'จัดชุดและรวมเลทให้ไม่เกิน Master Cap โดยไม่แยก LPN และไม่รวมข้ามคลัง', 'ตัดยอด บันทึกประวัติ และ Export ผลเป็นไฟล์ Excel', 'โหมดสว่าง/มืด และเก็บข้อมูลในเบราว์เซอร์ด้วย IndexedDB'],
     images: ['assets/wms-cold-storage.jpg'],
-    link: { url: 'https://achita-yuki.github.io/wms-app-beta-test/', label: 'เปิดใช้งานเว็บ WMS' } },
+    link: { url: 'https://achita-yuki.github.io/wms-app-beta-test/', label: 'เปิดใช้งานเว็บ WMS' },
+    en: { badge: 'Latest', linkLabel: 'Open the WMS web app',
+      summary: 'Cold-storage warehouse stock management system for stock deduction, arranging pallet sets to fit the Master Cap, and merging pallets.',
+      points: ['Import stock data from Excel / CSV files of the WMS system (supports tens of thousands of rows)', 'Stock table totalled by LPN, with filters for warehouse, location and LPN type', 'Arrange and merge pallets without exceeding the Master Cap — never splitting an LPN or merging across warehouses', 'Deduct stock, keep a history, and export the results to an Excel file', 'Light / dark mode, with data stored in the browser using IndexedDB'] } },
   { id: 'catfish-care', title: 'Smart Catfish Care System',
     tags: ['ESP32', 'Arduino', 'DS18B20', 'Turbidity Sensor', 'IoT'],
     summary: 'ระบบตรวจสอบอุณหภูมิและความขุ่นของน้ำในการเลี้ยงปลาดุก',
     points: ['วัดอุณหภูมิน้ำด้วยเซนเซอร์ DS18B20', 'วัดความขุ่นของน้ำด้วย Turbidity Sensor', 'ประมวลผลและเชื่อมต่อระบบ IoT ด้วย ESP32 / Arduino', 'ช่วยให้ผู้เลี้ยงติดตามคุณภาพน้ำได้สะดวกขึ้น'],
-    images: ['assets/catfish.jpg', 'assets/catfish-circuit.jpg', 'assets/catfish-work.jpg'] },
+    images: ['assets/catfish.jpg', 'assets/catfish-circuit.jpg', 'assets/catfish-work.jpg'],
+    en: { summary: 'A system that monitors water temperature and turbidity for catfish farming.',
+      points: ['Measures water temperature with a DS18B20 sensor', 'Measures water turbidity with a Turbidity Sensor', 'Processes data and connects to IoT using ESP32 / Arduino', 'Helps farmers keep track of water quality more conveniently'] } },
   { id: 'catfish-guide', title: 'Thai Catfish Guide',
     tags: ['HTML', 'CSS', 'JavaScript'],
     summary: 'เว็บไซต์รวบรวมข้อมูลเกี่ยวกับปลาดุกในประเทศไทย',
     points: ['พัฒนาด้วย HTML, CSS และ JavaScript', 'รวบรวมและนำเสนอข้อมูลปลาดุกในประเทศไทย', 'ออกแบบให้อ่านง่ายและใช้งานได้บนหลายอุปกรณ์'],
     images: ['assets/catfish-guide.jpg', 'assets/catfish-guide-page.jpg'],
-    link: { url: 'https://www.figma.com/proto/udrFQarwqmFAtHCMkoSuUV/%E0%B9%84%E0%B8%81%E0%B8%84%E0%B9%8C%E0%B8%9E%E0%B8%B1%E0%B8%99%E0%B8%98%E0%B8%B8%E0%B9%8C%E0%B8%9B%E0%B8%A5%E0%B8%B2%E0%B8%94%E0%B8%B8%E0%B8%81%E0%B9%84%E0%B8%97%E0%B8%A2?t=b7dYptMBFuHbHaeN-1&scaling=scale-down&content-scaling=fixed&page-id=0%3A1&node-id=80-202&starting-point-node-id=80%3A202&show-proto-sidebar=1', label: 'ดู Prototype บน Figma' } },
+    link: { url: 'https://www.figma.com/proto/udrFQarwqmFAtHCMkoSuUV/%E0%B9%84%E0%B8%81%E0%B8%84%E0%B9%8C%E0%B8%9E%E0%B8%B1%E0%B8%99%E0%B8%98%E0%B8%B8%E0%B9%8C%E0%B8%9B%E0%B8%A5%E0%B8%B2%E0%B8%94%E0%B8%B8%E0%B8%81%E0%B9%84%E0%B8%97%E0%B8%A2?t=b7dYptMBFuHbHaeN-1&scaling=scale-down&content-scaling=fixed&page-id=0%3A1&node-id=80-202&starting-point-node-id=80%3A202&show-proto-sidebar=1', label: 'ดู Prototype บน Figma' },
+    en: { linkLabel: 'View the prototype on Figma', summary: 'A website that gathers information about catfish in Thailand.',
+      points: ['Built with HTML, CSS and JavaScript', 'Collects and presents information about catfish in Thailand', 'Designed to be easy to read and usable on many devices'] } },
   { id: 'decision-tree', title: 'Decision Tree',
     tags: ['Python', 'Pandas', 'Matplotlib', 'Machine Learning'],
     summary: 'โปรเจกต์ศึกษาการทำงานของ Decision Tree',
     points: ['เตรียมและวิเคราะห์ข้อมูลด้วย Pandas', 'แสดงผลด้วยกราฟจาก Matplotlib', 'ศึกษาหลักการทำงานของ Decision Tree ใน Machine Learning'],
-    images: ['assets/decision-tree.jpg'] }
+    images: ['assets/decision-tree.jpg'],
+    en: { summary: 'A project studying how a Decision Tree works.',
+      points: ['Prepare and analyse data with Pandas', 'Visualise results with Matplotlib charts', 'Study how Decision Trees work in Machine Learning'] } }
 ];
 
 /* ===== ภาพสำรอง: ถ้าไม่พบไฟล์ภาพ จะแสดงกรอบแทน (ไม่ให้รูปแตก) ===== */
@@ -54,7 +68,21 @@ function setTheme(t) {
 }
 let saved = 'dark'; try { saved = localStorage.getItem('theme') || 'dark'; } catch (e) {}
 setTheme(saved);
-$('#themeBtn').addEventListener('click', () => setTheme(root.dataset.theme === 'dark' ? 'light' : 'dark'));
+/* สลับธีมแบบวงกลมขยายจากจุดที่กด (View Transitions API) — เบราว์เซอร์ที่ไม่รองรับจะสลับทันทีตามปกติ */
+function toggleTheme(x = innerWidth / 2, y = innerHeight / 2) {
+  const next = root.dataset.theme === 'dark' ? 'light' : 'dark';
+  if (!document.startViewTransition || reduceMotion) { setTheme(next); return; }
+  const r = Math.hypot(Math.max(x, innerWidth - x), Math.max(y, innerHeight - y));
+  const t = document.startViewTransition(() => setTheme(next));
+  t.ready.then(() => root.animate(
+    { clipPath: [`circle(0px at ${x}px ${y}px)`, `circle(${r}px at ${x}px ${y}px)`] },
+    { duration: 650, easing: 'ease-in-out', pseudoElement: '::view-transition-new(root)' }
+  )).catch(() => {});
+}
+$('#themeBtn').addEventListener('click', e => {
+  const b = e.currentTarget.getBoundingClientRect();
+  toggleTheme(e.clientX || b.left + b.width / 2, e.clientY || b.top + b.height / 2);
+});
 
 /* ===== เมนูมือถือ ===== */
 const menu = $('#menu'), burger = $('#burger');
@@ -64,19 +92,29 @@ menu.addEventListener('click', e => { if (e.target.closest('a')) { menu.classLis
 /* ===== หมวดผลงาน (ใช้กับตัวกรอง) ===== */
 const catOf = p => p.tags.some(t => /ESP32|Arduino|IoT/i.test(t)) ? 'iot' : p.tags.some(t => /Python|Machine/i.test(t)) ? 'ml' : 'web';
 
-/* ===== สร้างการ์ดผลงาน ===== */
-$('#projectGrid').innerHTML = PROJECTS.map(p => `
+/* ===== สร้างการ์ดผลงาน (สร้างใหม่ทุกครั้งที่สลับภาษา) ===== */
+let curFilter = 'all', projectsRendered = false;
+function renderProjects() {
+  $('#projectGrid').innerHTML = PROJECTS.map(p => `
   <article class="card pcard reveal" data-cat="${catOf(p)}">
     <div class="pimg"><img src="${p.images[0]}" alt="${p.title}" loading="lazy">
-      <button class="plink" data-project="${p.id}" aria-label="ดูรายละเอียด ${p.title}"><span class="btn primary">ดูรายละเอียด<svg class="i"><use href="#i-arrow"/></svg></span></button>
+      <button class="plink" data-project="${p.id}" aria-label="${L('ดูรายละเอียด', 'View details of')} ${p.title}"><span class="btn primary">${L('ดูรายละเอียด', 'View Details')}<svg class="i"><use href="#i-arrow"/></svg></span></button>
     </div>
     <div class="pbody">
-      <h3>${p.title}${p.badge ? ` <span class="badge">${p.badge}</span>` : ''}</h3>
+      <h3>${p.title}${P(p, 'badge') ? ` <span class="badge">${P(p, 'badge')}</span>` : ''}</h3>
       <ul class="chips">${p.tags.map(t => `<li>${t}</li>`).join('')}</ul>
-      <p>${p.summary}</p>
-      <button class="btn ghost" data-project="${p.id}">View Details</button>
+      <p>${P(p, 'summary')}</p>
+      <button class="btn ghost" data-project="${p.id}">${L('ดูรายละเอียด', 'View Details')}</button>
     </div>
   </article>`).join('');
+  $$('#projectGrid .pcard').forEach(c => {
+    c.hidden = curFilter !== 'all' && c.dataset.cat !== curFilter;
+    if (projectsRendered) c.classList.add('in');   // สร้างใหม่หลังสลับภาษา: แสดงทันที ไม่ต้องรอเลื่อนมาถึง
+  });
+  projectsRendered = true;
+}
+renderProjects();
+document.addEventListener('langchange', renderProjects);
 
 /* ===== Modal รายละเอียดผลงาน + Gallery ===== */
 const modal = $('#modal'), mMain = $('#mMain'), lightbox = $('#lightbox');
@@ -85,19 +123,19 @@ let current = null, lastFocus = null;
 function setMain(i) {
   delete mMain.dataset.fb;                                   // ให้ภาพสำรองทำงานได้ทุกครั้งที่เปลี่ยนภาพ
   mMain.src = current.images[i];
-  mMain.alt = `${current.title} ภาพที่ ${i + 1}`;
+  mMain.alt = L(`${current.title} ภาพที่ ${i + 1}`, `${current.title} image ${i + 1}`);
   $$('.thumb').forEach((b, k) => b.classList.toggle('on', k === i));
 }
 function openProject(id) {
   current = PROJECTS.find(p => p.id === id); if (!current) return;
   lastFocus = document.activeElement;
   $('#mTitle').textContent = current.title;
-  $('#mSum').textContent = current.summary;
+  $('#mSum').textContent = P(current, 'summary');
   $('#mTags').innerHTML = current.tags.map(t => `<li>${t}</li>`).join('');
-  $('#mList').innerHTML = current.points.map(t => `<li>${t}</li>`).join('');
+  $('#mList').innerHTML = P(current, 'points').map(t => `<li>${t}</li>`).join('');
   $('#mThumbs').innerHTML = current.images.length > 1
-    ? current.images.map((s, i) => `<button class="thumb" data-i="${i}" aria-label="ดูภาพที่ ${i + 1}"><img src="${s}" alt="${current.title} ภาพที่ ${i + 1}"></button>`).join('') : '';
-  $('#mLink').innerHTML = current.link ? `<a class="btn ghost" href="${current.link.url}" target="_blank" rel="noopener noreferrer">${current.link.label}<svg class="i"><use href="#i-arrow"/></svg></a>` : '';
+    ? current.images.map((s, i) => `<button class="thumb" data-i="${i}" aria-label="${L('ดูภาพที่', 'View image')} ${i + 1}"><img src="${s}" alt="${current.title} ${L('ภาพที่', 'image')} ${i + 1}"></button>`).join('') : '';
+  $('#mLink').innerHTML = current.link ? `<a class="btn ghost" href="${current.link.url}" target="_blank" rel="noopener noreferrer">${(lang === 'en' && current.en && current.en.linkLabel) || current.link.label}<svg class="i"><use href="#i-arrow"/></svg></a>` : '';
   setMain(0);
   modal.hidden = false; document.body.classList.add('lock');
   $('.m-close').focus();
@@ -196,11 +234,13 @@ document.addEventListener('pointermove', e => {
   const t = $('#clockT'), d = $('#clockD'), g = $('#greet');
   function tick() {
     const n = new Date(), h = n.getHours();
-    t.textContent = n.toLocaleTimeString('th-TH', { hourCycle: 'h23', hour: '2-digit', minute: '2-digit', second: '2-digit' });
-    d.textContent = n.toLocaleDateString('th-TH', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' });
-    g.textContent = h < 12 ? 'สวัสดีตอนเช้า' : h < 17 ? 'สวัสดีตอนบ่าย' : h < 19 ? 'สวัสดีตอนเย็น' : 'สวัสดีตอนค่ำ';
+    const loc = L('th-TH', 'en-GB');
+    t.textContent = n.toLocaleTimeString(loc, { hourCycle: 'h23', hour: '2-digit', minute: '2-digit', second: '2-digit' });
+    d.textContent = n.toLocaleDateString(loc, { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' });
+    g.textContent = h < 12 ? L('สวัสดีตอนเช้า', 'Good morning') : h < 17 ? L('สวัสดีตอนบ่าย', 'Good afternoon') : h < 19 ? L('สวัสดีตอนเย็น', 'Good evening') : L('สวัสดีตอนค่ำ', 'Good evening');
   }
   tick(); setInterval(tick, 1000);
+  document.addEventListener('langchange', tick);
 })();
 
 /* ===== ข้อความพิมพ์ทีละตัวอักษรในหน้า Hero ===== */
@@ -271,6 +311,7 @@ if ('IntersectionObserver' in window) {
   const bar = $('#filters'); if (!bar) return;
   bar.addEventListener('click', e => {
     const b = e.target.closest('[data-f]'); if (!b) return;
+    curFilter = b.dataset.f;
     $$('[data-f]', bar).forEach(x => { const on = x === b; x.classList.toggle('on', on); x.setAttribute('aria-pressed', on); });
     $$('#projectGrid .pcard').forEach(c => {
       c.hidden = b.dataset.f !== 'all' && c.dataset.cat !== b.dataset.f;
@@ -283,14 +324,15 @@ if ('IntersectionObserver' in window) {
 (function stats() {
   const vals = { projects: PROJECTS.length, tech: new Set(PROJECTS.flatMap(p => p.tags)).size, areas: 3 };
   const els = $$('[data-count]'); if (!els.length) return;
-  const run = el => {
-    const to = vals[el.dataset.count] ?? 0, t0 = performance.now(), dur = reduceMotion ? 0 : 1200;
+  const run = (el, instant) => {
+    const to = vals[el.dataset.count] ?? 0, t0 = performance.now(), dur = (reduceMotion || instant) ? 0 : 1200;
     (function f(t) { const k = dur ? Math.min((t - t0) / dur, 1) : 1; el.textContent = Math.round(to * (1 - Math.pow(1 - k, 3))); if (k < 1) requestAnimationFrame(f); })(t0);
   };
   if ('IntersectionObserver' in window) {
     const so = new IntersectionObserver(es => es.forEach(en => { if (en.isIntersecting) { run(en.target); so.unobserve(en.target); } }), { threshold: .6 });
     els.forEach(el => so.observe(el));
-  } else els.forEach(run);
+  } else els.forEach(el => run(el));
+  addEventListener('beforeprint', () => els.forEach(el => run(el, true)));   // พิมพ์โดยไม่ได้เลื่อนมาถึง: ให้ตัวเลขขึ้นครบทันที
 })();
 
 /* ===== ✨ แถบทักษะ: นับจากจำนวนผลงานที่ใช้จริง ===== */
@@ -298,7 +340,10 @@ if ('IntersectionObserver' in window) {
   const box = $('#skillBars'); if (!box) return;
   const n = {}; PROJECTS.forEach(p => p.tags.forEach(t => n[t] = (n[t] || 0) + 1));
   const rows = Object.entries(n).sort((a, b) => b[1] - a[1]).slice(0, 8);
-  box.innerHTML = rows.map(([t, c]) => `<li><div class="bl"><span>${t}</span><small>ใช้ใน ${c}/${PROJECTS.length} ผลงาน</small></div><div class="bar"><i style="--w:${c / PROJECTS.length * 100}%"></i></div></li>`).join('');
+  const render = () => {
+    box.innerHTML = rows.map(([t, c]) => `<li><div class="bl"><span>${t}</span><small>${L(`ใช้ใน ${c}/${PROJECTS.length} ผลงาน`, `Used in ${c}/${PROJECTS.length} projects`)}</small></div><div class="bar"><i style="--w:${c / PROJECTS.length * 100}%"></i></div></li>`).join('');
+  };
+  render(); document.addEventListener('langchange', render);
 })();
 
 /* ===== แถบความคืบหน้าการเลื่อน + ปุ่มกลับขึ้นบน ===== */
@@ -327,7 +372,97 @@ $('#projectGrid').addEventListener('animationend', e => {
   form.addEventListener('submit', e => {
     e.preventDefault();
     const name = $('#fName').value.trim(), mail = $('#fEmail').value.trim(), msg = $('#fMsg').value.trim();
-    const subject = `ติดต่อจากเว็บ Portfolio – ${name}`, body = `${msg}\n\n— ${name} (${mail})`;
+    const subject = L(`ติดต่อจากเว็บ Portfolio – ${name}`, `Message from your portfolio – ${name}`), body = `${msg}\n\n— ${name} (${mail})`;
     location.href = `mailto:${to}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+  });
+})();
+
+/* ===== ✨ สลับภาษา TH / EN
+   ข้อความไทยอยู่ใน HTML ตามเดิม ส่วนภาษาอังกฤษอยู่ใน data-en (ช่องกรอกใช้ data-en-ph)
+   ข้อความที่สร้างด้วย JS (การ์ดผลงาน นาฬิกา แถบทักษะ) ใช้ L() / P() และรับสัญญาณ 'langchange' ===== */
+const metaDesc = $('meta[name="description"]'), TH_DESC = metaDesc ? metaDesc.content : '';
+const EN_DESC = 'Portfolio of Achita Thawontash — a Computer Technology student interested in programming, web development and IoT.';
+function applyLang(l, silent) {
+  lang = l === 'en' ? 'en' : 'th';
+  try { localStorage.setItem('lang', lang); } catch (e) {}
+  root.lang = lang;
+  $$('[data-en]').forEach(el => {
+    if (el.dataset.th === undefined) el.dataset.th = el.innerHTML;          // จำข้อความไทยเดิมไว้ก่อนแปลครั้งแรก
+    el.innerHTML = lang === 'en' ? el.dataset.en : el.dataset.th;
+  });
+  $$('[data-en-ph]').forEach(el => {
+    if (el.dataset.thPh === undefined) el.dataset.thPh = el.placeholder;
+    el.placeholder = lang === 'en' ? el.dataset.enPh : el.dataset.thPh;
+  });
+  const lb = $('#langBtn');
+  lb.textContent = lang === 'en' ? 'TH' : 'EN';                            // ปุ่มแสดงภาษาที่จะสลับไป
+  lb.title = lang === 'en' ? 'ภาษาไทย' : 'English';
+  if (metaDesc) metaDesc.content = lang === 'en' ? EN_DESC : TH_DESC;
+  if (!silent) document.dispatchEvent(new Event('langchange'));
+}
+$('#langBtn').addEventListener('click', () => applyLang(lang === 'en' ? 'th' : 'en'));
+applyLang(lang, true);
+
+/* ===== ✨ ช่องค้นหา / คำสั่งด่วน (Ctrl+K หรือ ⌘K) ===== */
+(function palette() {
+  const box = $('#cmd'), input = $('#cmdInput'), list = $('#cmdList'); if (!box || !input) return;
+  const SECTIONS = [['home', 'หน้าแรก', 'Home'], ['about', 'เกี่ยวกับฉัน', 'About'], ['skills', 'ทักษะ', 'Skills'], ['projects', 'ผลงาน', 'Projects'], ['education', 'ประวัติการศึกษา', 'Education'], ['contact', 'ติดต่อ', 'Contact']];
+  const esc = s => String(s).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+  let items = [], shown = [], active = 0, prevFocus = null;
+
+  function build() {
+    items = [];
+    const add = (g, t, k, run) => items.push({ g, t, k: `${t} ${k}`.toLowerCase(), run });
+    const act = L('คำสั่ง', 'Action');
+    SECTIONS.forEach(([id, th, en]) => add(L('ไปที่ส่วน', 'Go to'), L(th, en), `${th} ${en} ${id}`, () => { const el = document.getElementById(id); if (el) el.scrollIntoView(); }));
+    PROJECTS.forEach(p => add(L('ผลงาน', 'Project'), p.title, `${p.tags.join(' ')} ${p.summary} ${(p.en && p.en.summary) || ''}`, () => openProject(p.id)));
+    add(act, L('สลับโหมดสว่าง / มืด', 'Toggle light / dark mode'), 'theme dark light โหมด ธีม สว่าง มืด', () => toggleTheme());
+    add(act, L('เปลี่ยนเป็นภาษาอังกฤษ', 'Switch to Thai (ภาษาไทย)'), 'language english thai ภาษา อังกฤษ ไทย', () => applyLang(lang === 'en' ? 'th' : 'en'));
+    const resume = $('#resumeBtn'); if (resume) add(act, L('ดาวน์โหลดเรซูเม่', 'Download resume'), 'resume cv pdf เรซูเม่ ดาวน์โหลด', () => resume.click());
+    const mail = $('a[href^="mailto:"]'); if (mail) add(act, L('ส่งอีเมลถึงฉัน', 'Send me an email'), 'email mail อีเมล ส่ง', () => { location.href = mail.href; });
+    add(act, L('พิมพ์ / บันทึกเป็น PDF', 'Print / Save as PDF'), 'print pdf พิมพ์ บันทึก', () => print());
+    $$('[data-social]').forEach(a => add(L('โซเชียล', 'Social'), a.textContent.trim(), `social โซเชียล ${a.href}`, () => window.open(a.href, '_blank', 'noopener')));
+  }
+  function render() {
+    list.innerHTML = shown.length
+      ? shown.map((c, i) => `<li role="option" id="cmd-${i}" data-i="${i}" class="${i === active ? 'on' : ''}" aria-selected="${i === active}"><span>${esc(c.t)}</span><small>${esc(c.g)}</small></li>`).join('')
+      : `<li class="cmd-empty">${L('ไม่พบผลลัพธ์', 'No results')}</li>`;
+    input.setAttribute('aria-activedescendant', shown.length ? `cmd-${active}` : '');
+  }
+  function filter() {
+    const q = input.value.trim().toLowerCase().split(/\s+/).filter(Boolean);
+    shown = items.filter(c => q.every(w => c.k.includes(w)));
+    active = 0; render();
+  }
+  function setActive(i, scroll = true) {
+    if (!shown.length) return;
+    active = (i + shown.length) % shown.length;
+    $$('li', list).forEach((li, k) => { const on = k === active; li.classList.toggle('on', on); li.setAttribute('aria-selected', on); });
+    input.setAttribute('aria-activedescendant', `cmd-${active}`);
+    const el = $('li.on', list); if (scroll && el) el.scrollIntoView({ block: 'nearest' });
+  }
+  function open() {
+    if (!box.hidden || !modal.hidden || !lightbox.hidden) return;
+    prevFocus = document.activeElement; build(); input.value = '';
+    input.placeholder = L('พิมพ์เพื่อค้นหา เช่น ผลงาน ติดต่อ dark…', 'Type to search — e.g. projects, contact, dark…');
+    filter(); box.hidden = false; document.body.classList.add('lock'); input.focus();
+  }
+  function close() { box.hidden = true; document.body.classList.remove('lock'); if (prevFocus && prevFocus.focus) prevFocus.focus(); }
+  function choose(i) { const c = shown[i]; if (!c) return; close(); setTimeout(c.run, 0); }   // ปิดก่อนแล้วค่อยทำคำสั่ง (ไม่งั้นหน้าเลื่อนไม่ได้เพราะล็อกอยู่)
+
+  input.addEventListener('input', filter);
+  input.addEventListener('keydown', e => {
+    if (e.key === 'ArrowDown') { e.preventDefault(); setActive(active + 1); }
+    else if (e.key === 'ArrowUp') { e.preventDefault(); setActive(active - 1); }
+    else if (e.key === 'Enter') { e.preventDefault(); choose(active); }
+    else if (e.key === 'Tab') e.preventDefault();
+  });
+  list.addEventListener('mousemove', e => { const li = e.target.closest('li[data-i]'); if (li && +li.dataset.i !== active) setActive(+li.dataset.i, false); });
+  list.addEventListener('click', e => { const li = e.target.closest('li[data-i]'); if (li) choose(+li.dataset.i); });
+  $('[data-cmd-close]').addEventListener('click', close);
+  $('#cmdBtn').addEventListener('click', open);
+  document.addEventListener('keydown', e => {
+    if ((e.ctrlKey || e.metaKey) && e.key && e.key.toLowerCase() === 'k') { e.preventDefault(); box.hidden ? open() : close(); }
+    else if (e.key === 'Escape' && !box.hidden) close();
   });
 })();
