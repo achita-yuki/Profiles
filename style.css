@@ -36,7 +36,7 @@ main,.foot{position:relative;z-index:1}
 .btn.primary::after{content:"";position:absolute;top:0;left:-60%;width:40%;height:100%;background:linear-gradient(100deg,transparent,rgba(255,255,255,.45),transparent);transform:skewX(-20deg);transition:left .6s}
 .btn.primary:hover::after{left:130%}
 .btn.primary:hover{box-shadow:0 0 0 1px var(--ac),0 14px 40px -6px var(--glow)}
-.btn.ghost{background:color-mix(in srgb,var(--bg) 55%,transparent);backdrop-filter:blur(6px);color:var(--tx)}.btn.ghost:hover{border-color:var(--ac);color:var(--ac)}
+.btn.ghost{background:color-mix(in srgb,var(--bg) 70%,transparent);color:var(--tx)}.btn.ghost:hover{border-color:var(--ac);color:var(--ac)}
 .chips{display:flex;flex-wrap:wrap;gap:8px}
 .chips li,.tag{padding:3px 12px;border-radius:99px;font-size:13px;font-weight:500;color:var(--ac);background:color-mix(in srgb,var(--ac) 12%,transparent);border:1px solid color-mix(in srgb,var(--ac) 25%,transparent)}
 /* ชิปทักษะ: hover แล้วเติมสี (เหมือน .skills-name ในตัวอย่าง) */
@@ -59,13 +59,14 @@ h1:hover{animation:glitch .35s steps(2) 1}
 .grad{background:linear-gradient(90deg,var(--ac),#60a5fa,#a78bfa,var(--ac));background-size:200% auto;-webkit-background-clip:text;background-clip:text;color:transparent;animation:shine 6s linear infinite}
 @keyframes shine{to{background-position:200% center}}
 .pill{display:inline-flex;align-items:center;gap:8px;padding:4px 14px;margin-bottom:12px;border-radius:99px;font-size:13px;font-weight:500;color:var(--ac);background:color-mix(in srgb,var(--ac) 10%,transparent);border:1px solid color-mix(in srgb,var(--ac) 35%,transparent)}
-.pulse{width:8px;height:8px;border-radius:50%;background:var(--ac);animation:pulse 2s infinite}
-.pulse.live{background:#34d399;--pc:rgba(52,211,153,.55)}
-@keyframes pulse{0%{box-shadow:0 0 0 0 var(--pc,var(--glow))}70%{box-shadow:0 0 0 9px transparent}100%{box-shadow:0 0 0 0 transparent}}
+.pulse{position:relative;width:8px;height:8px;border-radius:50%;background:var(--ac)}
+.pulse::after,.dot::after{content:"";position:absolute;inset:0;border-radius:50%;background:var(--pc,var(--ac));animation:pulse 2s infinite}
+.pulse.live{background:#34d399;--pc:#34d399}
+@keyframes pulse{0%{transform:scale(1);opacity:.7}70%,100%{transform:scale(3);opacity:0}}
 .role{font:500 18px/1.7 ui-monospace,Consolas,monospace;margin:2px 0 12px;min-height:1.7em}.role-lb{color:var(--ac)}
 .caret{display:inline-block;width:2px;height:1.1em;margin-left:2px;vertical-align:-3px;background:var(--ac);animation:blink 1s steps(2) infinite}
 @keyframes blink{50%{opacity:0}}
-.clock{display:inline-flex;flex-wrap:wrap;align-items:center;gap:6px 12px;margin-top:24px;padding:10px 22px;border-radius:99px;background:color-mix(in srgb,var(--sf) 70%,transparent);border:1px solid var(--bd);backdrop-filter:blur(10px)}
+.clock{display:inline-flex;flex-wrap:wrap;align-items:center;gap:6px 12px;margin-top:24px;padding:10px 22px;border-radius:99px;background:color-mix(in srgb,var(--sf) 88%,transparent);border:1px solid var(--bd)}
 .clock b{font-size:21px;font-weight:600;font-variant-numeric:tabular-nums}.clock span{color:var(--mu);font-size:14px}
 .th-name{font-size:20px;color:var(--mu);margin-bottom:14px}
 .lead{max-width:560px;color:var(--mu);font-size:17px}
@@ -93,7 +94,7 @@ h2{font-size:clamp(28px,4vw,40px);font-weight:700;line-height:1.25}
 h2::after{content:"";display:block;width:0;height:4px;margin:10px auto 0;border-radius:4px;background:linear-gradient(90deg,var(--ac),#f43f5e);transition:width .9s .2s cubic-bezier(.2,.8,.2,1)}
 .reveal.in h2::after,.head.in h2::after{width:72px}
 h3{font-size:19px;font-weight:600;line-height:1.35}
-.card{position:relative;background:color-mix(in srgb,var(--sf) 78%,transparent);backdrop-filter:blur(10px);border:1px solid var(--bd);border-radius:20px;padding:24px;transition:border-color .3s,box-shadow .3s}
+.card{position:relative;background:color-mix(in srgb,var(--sf) 90%,transparent);border:1px solid var(--bd);border-radius:20px;padding:24px;transition:border-color .3s,box-shadow .3s}
 .card::before{content:"";position:absolute;inset:0;border-radius:inherit;pointer-events:none;opacity:0;transition:opacity .3s;background:radial-gradient(420px circle at var(--mx,50%) var(--my,50%),var(--glow),transparent 45%)}
 .card:hover::before{opacity:1}.card:hover{border-color:color-mix(in srgb,var(--ac) 55%,var(--bd))}
 .about-grid{display:grid;grid-template-columns:1.1fr .9fr;gap:36px;align-items:start}
@@ -133,7 +134,7 @@ h3{font-size:19px;font-weight:600;line-height:1.35}
 @keyframes ang{to{--ang:360deg}}
 .pimg{position:relative;aspect-ratio:16/10;overflow:hidden;background:var(--bg2)}
 .pimg img{width:100%;height:100%;object-fit:cover;transition:transform .5s}.pcard:hover .pimg img{transform:scale(1.07)}
-.plink{position:absolute;inset:0;z-index:1;display:flex;align-items:center;justify-content:center;border:0;cursor:pointer;background:color-mix(in srgb,var(--bg) 42%,transparent);backdrop-filter:blur(8px);transform:translateY(101%);transition:transform .35s cubic-bezier(.2,.8,.2,1)}
+.plink{position:absolute;inset:0;z-index:1;display:flex;align-items:center;justify-content:center;border:0;cursor:pointer;background:color-mix(in srgb,var(--bg) 72%,transparent);transform:translateY(101%);transition:transform .35s cubic-bezier(.2,.8,.2,1)}
 .pcard:hover .plink,.plink:focus-visible{transform:none}
 .pbody{padding:22px;display:flex;flex-direction:column;gap:12px;flex:1}.pbody p{color:var(--mu);font-size:15px;flex:1}
 .pbody .btn{align-self:flex-start;padding:9px 20px;font-size:14px}
@@ -145,7 +146,7 @@ h3{font-size:19px;font-weight:600;line-height:1.35}
 .timeline{position:relative;max-width:720px;margin:0 auto;padding-left:34px;display:grid;gap:22px}
 .timeline::before{content:"";position:absolute;left:5px;top:6px;bottom:6px;width:2px;background:linear-gradient(var(--ac),var(--bd))}
 .timeline li{position:relative}
-.dot{position:absolute;left:-34px;top:26px;width:12px;height:12px;border-radius:50%;background:var(--ac);box-shadow:0 0 0 5px var(--glow);animation:pulse 2.4s infinite}
+.dot{position:absolute;left:-34px;top:26px;width:12px;height:12px;border-radius:50%;background:var(--ac);box-shadow:0 0 0 5px var(--glow)}
 .timeline small{color:var(--ac);font-weight:600}.timeline p{color:var(--mu)}
 
 /* ===== Contact: ข้อมูลซ้าย + ฟอร์มขวา (เหมือนตัวอย่าง) ===== */
@@ -200,8 +201,7 @@ body.lock{overflow:hidden}
 
 /* ===== แถบความคืบหน้า / ปุ่มกลับขึ้นบน / ลูกเล่นอื่น ๆ ===== */
 .progress{position:fixed;top:0;left:0;width:100%;height:3px;z-index:100;transform-origin:0 50%;transform:scaleX(0);background:linear-gradient(90deg,var(--ac),#2563eb,#f43f5e)}
-.to-top{position:fixed;right:20px;bottom:20px;z-index:60;box-shadow:0 10px 30px -10px var(--glow);backdrop-filter:blur(10px)}
-body::after{content:"";position:fixed;inset:0;z-index:200;pointer-events:none;opacity:.05;mix-blend-mode:overlay;background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='160'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>")}
+.to-top{position:fixed;right:20px;bottom:20px;z-index:60;box-shadow:0 10px 30px -10px var(--glow)}
 .cursor-glow{position:fixed;left:0;top:0;width:520px;height:520px;margin:-260px 0 0 -260px;z-index:0;pointer-events:none;border-radius:50%;background:radial-gradient(circle,var(--glow),transparent 65%);opacity:.55;will-change:transform}
 @media(hover:none){.cursor-glow{display:none}}
 ::-webkit-scrollbar{width:10px}::-webkit-scrollbar-track{background:var(--bg)}
