@@ -230,3 +230,51 @@ body::after{content:"";position:fixed;inset:0;z-index:200;pointer-events:none;op
   .cform{padding:22px}
 }
 @media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important;scroll-behavior:auto!important}.js .reveal{opacity:1;transform:none}.cursor-glow{display:none}.plink{display:none}}
+
+/* ===== ✨ ปุ่มภาษา / โซเชียล ===== */
+.lang-btn{font:700 12px/1 'Prompt',system-ui,sans-serif;letter-spacing:.04em}
+.social{display:flex;flex-wrap:wrap;gap:10px}
+.soc{display:inline-flex;align-items:center;gap:8px;padding:10px 18px;border-radius:14px;border:1px solid var(--bd);background:color-mix(in srgb,var(--sf) 70%,transparent);font-weight:500;font-size:14px;transition:.25s}
+.soc:hover{border-color:var(--ac);color:var(--ac);transform:translateY(-3px);box-shadow:0 14px 30px -16px var(--glow)}
+
+/* ===== ✨ ช่องค้นหา / คำสั่งด่วน (Ctrl+K) ===== */
+.cmd{position:fixed;inset:0;z-index:95;display:grid;place-items:start center;padding:14vh 16px 16px}
+.cmd-bg{position:absolute;inset:0;background:rgba(2,6,16,.7);backdrop-filter:blur(5px)}
+.cmd-box{position:relative;width:min(620px,100%);background:var(--sf);border:1px solid var(--bd);border-radius:20px;box-shadow:0 30px 80px -20px rgba(0,0,0,.6),0 0 0 1px color-mix(in srgb,var(--ac) 20%,transparent);overflow:hidden;animation:pop .25s ease}
+.cmd-in{display:flex;align-items:center;gap:12px;padding:14px 18px;border-bottom:1px solid var(--bd);color:var(--mu)}
+.cmd-in input{flex:1;min-width:0;background:none;border:0;outline:none;color:var(--tx);font:inherit;font-size:17px}
+kbd{padding:2px 7px;border-radius:7px;border:1px solid var(--bd);background:var(--bg2);color:var(--mu);font:600 11px ui-monospace,Consolas,monospace}
+.cmd-list{max-height:min(52vh,380px);overflow:auto;padding:8px}
+.cmd-list li{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:10px 12px;border-radius:12px;cursor:pointer}
+.cmd-list li.on{background:color-mix(in srgb,var(--ac) 14%,transparent);color:var(--ac)}
+.cmd-list small{color:var(--mu);font-size:12px;white-space:nowrap}
+.cmd-list li.cmd-empty{justify-content:center;color:var(--mu);cursor:default}
+.cmd-foot{display:flex;gap:18px;padding:10px 18px;border-top:1px solid var(--bd);color:var(--mu);font-size:12px}
+.cmd-foot span{display:inline-flex;align-items:center;gap:6px}
+
+/* ===== ✨ เปลี่ยนธีมแบบวงกลมขยาย (View Transitions) ===== */
+::view-transition-old(root),::view-transition-new(root){animation:none;mix-blend-mode:normal}
+::view-transition-old(root){z-index:1}
+::view-transition-new(root){z-index:2}
+
+/* ===== ✨ โหมดพิมพ์ / บันทึกเป็น PDF (Ctrl+P) ===== */
+@page{margin:14mm}
+@media print{
+  :root,[data-theme="light"],[data-theme="dark"]{--bg:#fff;--bg2:#fff;--sf:#fff;--bd:#d6dde8;--tx:#111;--mu:#444;--ac:#0e7490;--ac2:#0e7490;--onac:#fff;--glow:transparent}
+  html,body{background:#fff!important;color:#111}
+  #bgCanvas,.cursor-glow,.progress,.nav,.hero-word,.scroll-down,.marquee,.filters,.to-top,.cform,.plink,.cmd,.modal,.lightbox,.ring,.ring2,.clock,.role,.pill,.pbody .btn,body::after{display:none!important}
+  *{animation:none!important;transition:none!important;backdrop-filter:none!important;box-shadow:none!important;text-shadow:none!important}
+  .js .reveal{opacity:1!important;transform:none!important}
+  section{padding:22px 0!important}
+  .alt,.foot{background:none}
+  .hero{min-height:0;padding:10px 0!important;background:none}
+  .hero-in{grid-template-columns:1fr 200px;gap:24px}
+  .avatar-wrap{width:200px}
+  .card{background:#fff;break-inside:avoid;border-color:#d6dde8}
+  .card::before,.pcard::after{display:none}
+  .grad,.stat b{background:none;-webkit-text-fill-color:#0e7490;color:#0e7490}
+  .bar i{width:var(--w)!important;background:#0e7490}
+  h2::after{width:56px!important}
+  .contact-wrap{grid-template-columns:1fr}
+  .pimg{aspect-ratio:16/7}
+}
