@@ -181,11 +181,11 @@ const reduceMotion = matchMedia('(prefers-reduced-motion: reduce)').matches;
   const mouse = { x: -9999, y: -9999 };
   let W, H, pts = [];
   function resize() {
-    const dpr = Math.min(window.devicePixelRatio || 1, 2);
+    const dpr = Math.min(window.devicePixelRatio || 1, 1.5);          // เส้นบาง ๆ ไม่ต้องละเอียดระดับ 2x
     W = innerWidth; H = innerHeight;
     cv.width = W * dpr; cv.height = H * dpr;
     cx.setTransform(dpr, 0, 0, dpr, 0, 0);
-    const n = Math.min(90, Math.round(W * H / 16000));
+    const n = Math.min(55, Math.round(W * H / 22000));                // จำนวนจุดลดลง (คู่ที่ต้องคำนวณลดลงเกือบ 3 เท่า)
     pts = Array.from({ length: n }, () => ({
       x: Math.random() * W, y: Math.random() * H,
       vx: (Math.random() - .5) * .35, vy: (Math.random() - .5) * .35,
@@ -193,7 +193,7 @@ const reduceMotion = matchMedia('(prefers-reduced-motion: reduce)').matches;
     }));
   }
   function frame() {
-    const light = root.dataset.theme === 'light', c = light ? '14,116,144' : '34,211,238', k = light ? .22 : .35, D = 140;
+    const light = root.dataset.theme === 'light', c = light ? '14,116,144' : '34,211,238', k = light ? .22 : .35, D = 140, D2 = D * D, B = 4;
     cx.clearRect(0, 0, W, H);
     for (const p of pts) {
       if (!reduceMotion) {
@@ -202,16 +202,29 @@ const reduceMotion = matchMedia('(prefers-reduced-motion: reduce)').matches;
         if (p.y < 0 || p.y > H) p.vy *= -1;
       }
     }
+    // รวมเส้นเป็น B ระดับความจาง แล้ววาดทีละกลุ่มในครั้งเดียว (แทนการสั่งวาดทีละเส้น ซึ่งเป็นหลักร้อยครั้งต่อเฟรม)
+    const seg = Array.from({ length: B }, () => []);
     for (let i = 0; i < pts.length; i++) {
       const a = pts[i];
       for (let j = i + 1; j < pts.length; j++) {
-        const b = pts[j], d = Math.hypot(a.x - b.x, a.y - b.y);
-        if (d < D) { cx.strokeStyle = `rgba(${c},${(1 - d / D) * k})`; cx.lineWidth = 1; cx.beginPath(); cx.moveTo(a.x, a.y); cx.lineTo(b.x, b.y); cx.stroke(); }
+        const b = pts[j], dx = a.x - b.x, dy = a.y - b.y, d2 = dx * dx + dy * dy;
+        if (d2 < D2) seg[Math.min(B - 1, Math.floor((1 - Math.sqrt(d2) / D) * B))].push(a.x, a.y, b.x, b.y);
       }
-      const dm = Math.hypot(a.x - mouse.x, a.y - mouse.y);
-      if (dm < 170) { cx.strokeStyle = `rgba(${c},${(1 - dm / 170) * .6})`; cx.beginPath(); cx.moveTo(a.x, a.y); cx.lineTo(mouse.x, mouse.y); cx.stroke(); }
-      cx.fillStyle = a.red ? 'rgba(244,63,94,.85)' : `rgba(${c},.8)`;
-      cx.beginPath(); cx.arc(a.x, a.y, a.r, 0, 6.2832); cx.fill();
+      const mx = a.x - mouse.x, my = a.y - mouse.y, dm2 = mx * mx + my * my;
+      if (dm2 < 28900) { cx.strokeStyle = `rgba(${c},${(1 - Math.sqrt(dm2) / 170) * .6})`; cx.beginPath(); cx.moveTo(a.x, a.y); cx.lineTo(mouse.x, mouse.y); cx.stroke(); }
+    }
+    cx.lineWidth = 1;
+    for (let g = 0; g < B; g++) {
+      const arr = seg[g]; if (!arr.length) continue;
+      cx.strokeStyle = `rgba(${c},${((g + .5) / B) * k})`; cx.beginPath();
+      for (let q = 0; q < arr.length; q += 4) { cx.moveTo(arr[q], arr[q + 1]); cx.lineTo(arr[q + 2], arr[q + 3]); }
+      cx.stroke();
+    }
+    // จุด: วาดสองกลุ่มสี (ปกติ / แดง) กลุ่มละครั้ง
+    for (const red of [false, true]) {
+      cx.fillStyle = red ? 'rgba(244,63,94,.85)' : `rgba(${c},.8)`; cx.beginPath();
+      for (const a of pts) if (a.red === red) { cx.moveTo(a.x + a.r, a.y); cx.arc(a.x, a.y, a.r, 0, 6.2832); }
+      cx.fill();
     }
     if (!reduceMotion) requestAnimationFrame(frame);
   }
@@ -262,8 +275,14 @@ document.addEventListener('pointermove', e => {
 (function cursorGlow() {
   const g = $('.cursor-glow'); if (!g || reduceMotion) return;
   let tx = innerWidth / 2, ty = innerHeight / 3, x = tx, y = ty;
-  addEventListener('pointermove', e => { tx = e.clientX; ty = e.clientY; }, { passive: true });
-  (function loop() { x += (tx - x) * .08; y += (ty - y) * .08; g.style.transform = `translate(${x}px,${y}px)`; requestAnimationFrame(loop); })();
+  let raf = 0;
+  function loop() {                                                 // วิ่งเฉพาะตอนแสงยังตามเมาส์ไม่ทัน พอถึงแล้วหยุด (ไม่เปลืองตอนอยู่เฉย ๆ)
+    x += (tx - x) * .1; y += (ty - y) * .1;
+    g.style.transform = `translate(${x}px,${y}px)`;
+    raf = Math.abs(tx - x) + Math.abs(ty - y) > .5 ? requestAnimationFrame(loop) : 0;
+  }
+  addEventListener('pointermove', e => { tx = e.clientX; ty = e.clientY; if (!raf) raf = requestAnimationFrame(loop); }, { passive: true });
+  loop();
 })();
 
 /* ===== ✨ การ์ดผลงานเอียง 3D ตามเมาส์ ===== */
